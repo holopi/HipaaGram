@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "SignInViewController.h"
+#import "ConversationListViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, SignInDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

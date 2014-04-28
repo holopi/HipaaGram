@@ -8,6 +8,9 @@
 
 #import "ConversationViewController.h"
 #import "MessageTableViewCell.h"
+#import "Message.h"
+#import "JSBubbleView.h"
+#import "JSBubbleImageViewFactory.h"
 
 @interface ConversationViewController ()
 
@@ -31,9 +34,27 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     
+    self.delegate = self;
+    self.dataSource = self;
+    
+    [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:14.0f]];
+    
+    self.title = _username;
+    
+    self.messageInputView.textView.placeHolder = @"message";
+    
+    self.sender = @"Sender McGee";
+    
     _messages = [NSMutableArray array];
-    [_tblMessages registerNib:[UINib nibWithNibName:@"MessageTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"MessageCellIdentifier"];
-    [_tblMessages reloadData];
+    
+    [Catalyze setApiKey:_apiKey applicationId:_appId];
+    
+    [self.tableView reloadData];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    [self scrollToBottomAnimated:NO];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,29 +63,120 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - UITableViewDataSource
+#pragma mark - JSMessagesDataSource
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    MessageTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"MessageCellIdentifier"];
-    return cell;
+- (Message *)messageForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [_messages objectAtIndex:indexPath.row];
 }
+
+- (UIImageView *)avatarImageViewForRowAtIndexPath:(NSIndexPath *)indexPath sender:(NSString *)sender {
+    return nil;
+}
+
+#pragma mark - JSMessagesDelegate
+
+- (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date {
+    NSLog(@"send the text to Catalyze here");
+    Message *msg = [[Message alloc] init];
+    [msg setValue:text forKey:@"msgContent"];
+    [_messages addObject:msg];
+    [self finishSend];
+    [self scrollToBottomAnimated:YES];
+    
+    CatalyzeObject *obj = [CatalyzeObject objectWithClassName:@"messages"];
+    [obj setValue:_username forKey:@"toPhone"];
+    [obj setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber] forKey:@"fromPhone"];
+    
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateStyle:NSDateFormatterShortStyle];
+    
+    [obj setValue:[format stringFromDate:[NSDate date]] forKey:@"timestamp"];
+    [obj setValue:text forKey:@"msgContent"];
+    [obj setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
+    
+    [obj saveInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
+        if (!succeeded) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        }
+    }];
+}
+
+- (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if ([[[_messages objectAtIndex:indexPath.row] valueForKey:@"from"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber]]) {
+        return JSBubbleMessageTypeOutgoing;
+    }
+    return JSBubbleMessageTypeIncoming;
+    //return indexPath.row%2 == 0 ? JSBubbleMessageTypeIncoming : JSBubbleMessageTypeOutgoing;
+}
+
+- (UIColor *)colorForMessageType:(JSBubbleMessageType)type {
+    if (type == JSBubbleMessageTypeOutgoing) {
+        return [UIColor colorWithRed:51.0/255.0f green:181.0/255.0f blue:229.0/255.0f alpha:1.0f];
+    } else {
+        return [UIColor colorWithRed:225.0/255.0f green:225.0/255.0f blue:225.0/255.0f alpha:1.0f];
+    }
+}
+
+- (UIImageView *)bubbleImageViewWithType:(JSBubbleMessageType)type forRowAtIndexPath:(NSIndexPath *)indexPath {
+    return [JSBubbleImageViewFactory bubbleImageViewForType:type color:[self colorForMessageType:type]];
+}
+
+- (JSMessageInputViewStyle)inputViewStyle {
+    return JSMessageInputViewStyleFlat;
+}
+
+- (BOOL)shouldDisplayTimestampForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
+- (void)configureCell:(JSBubbleMessageCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    if ([cell messageType] == JSBubbleMessageTypeOutgoing) {
+        
+        // Customize any UITextView properties
+        cell.bubbleView.textView.textColor = [UIColor whiteColor];
+        
+        if ([cell.bubbleView.textView respondsToSelector:@selector(linkTextAttributes)]) {
+            NSMutableDictionary *attrs = [cell.bubbleView.textView.linkTextAttributes mutableCopy];
+            [attrs setValue:[UIColor blueColor] forKey:UITextAttributeTextColor];
+            
+            cell.bubbleView.textView.linkTextAttributes = attrs;
+        }
+    }
+    
+    // Customize any UILabel properties for timestamps or subtitles
+    if (cell.timestampLabel) {
+        cell.timestampLabel.textColor = [UIColor lightGrayColor];
+        cell.timestampLabel.shadowOffset = CGSizeZero;
+    }
+    
+    if (cell.subtitleLabel) {
+        cell.subtitleLabel.textColor = [UIColor lightGrayColor];
+    }
+    
+    // Enable data detectors
+    cell.bubbleView.textView.dataDetectorTypes = UIDataDetectorTypeAll;
+}
+
+- (BOOL)shouldPreventScrollToBottomWhileUserScrolling {
+    return YES;
+}
+
+- (BOOL)allowsPanToDismissKeyboard {
+    return YES;
+}
+
+/*- (UIButton *)sendButtonForInputView {
+    
+}
+
+- (NSString *)customCellIdentifierForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+}*/
+
+#pragma mark - UITableViewDataSource
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return _messages.count;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
-
-#pragma mark - UITableViewDelegate
-
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 88.0f;
-}
-
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"selected row %ld", indexPath.row);
 }
 
 @end

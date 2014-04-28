@@ -10,4 +10,8 @@
 
 @interface ContactTableViewCell : UITableViewCell
 
+@property (weak, nonatomic) IBOutlet UILabel *lblRecipient;
+
+- (void)setCellData:(NSString *)displayName;
+
 @end

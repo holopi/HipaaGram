@@ -8,6 +8,7 @@
 
 #import "ContactsViewController.h"
 #import "ContactTableViewCell.h"
+#import "ProxyAPI.h"
 
 @interface ContactsViewController ()
 
@@ -30,10 +31,13 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.navigationItem.title = @"Contacts";
     
     _contacts = [NSMutableArray array];
     [_tblContacts registerNib:[UINib nibWithNibName:@"ContactTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ContactCellIdentifier"];
     [_tblContacts reloadData];
+    
+    [self fetchContacts];
 }
 
 - (void)didReceiveMemoryWarning
@@ -42,10 +46,24 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)fetchContacts {
+    [ProxyAPI fetchContacts:^(id response, int status, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            _contacts = response;
+            [_tblContacts reloadData];
+        }
+    }];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ContactCellIdentifier"];
+    [cell setSelected:NO animated:NO];
+    [cell setHighlighted:NO animated:NO];
+    [cell setCellData:[[_contacts objectAtIndex:indexPath.row] valueForKey:@"username"]];
     return cell;
 }
 
@@ -64,7 +82,10 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"selected row %ld", indexPath.row);
+    NSLog(@"selected contact %@", [_contacts objectAtIndex:indexPath.row]);
+    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
+    [[tableView cellForRowAtIndexPath:indexPath] setHighlighted:NO animated:YES];
+    
 }
 
 @end

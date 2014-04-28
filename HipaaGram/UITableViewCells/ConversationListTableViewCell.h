@@ -7,7 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "Conversation.h"
 
 @interface ConversationListTableViewCell : UITableViewCell
+
+@property (weak, nonatomic) IBOutlet UILabel *lblRecipient;
+
+- (void)setCellData:(NSString *)recipient;
 
 @end

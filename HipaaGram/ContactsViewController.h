@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HipaaGramViewController.h"
 
-@interface ContactsViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface ContactsViewController : HipaaGramViewController<UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tblContacts;
 
 @end

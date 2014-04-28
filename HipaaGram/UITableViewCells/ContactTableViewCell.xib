@@ -21,6 +21,9 @@
                     </label>
                 </subviews>
             </tableViewCellContentView>
+            <connections>
+                <outlet property="lblRecipient" destination="mCB-3x-Y5W" id="nrC-Th-i8t"/>
+            </connections>
         </tableViewCell>
     </objects>
 </document>

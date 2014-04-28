@@ -22,4 +22,8 @@
     // Configure the view for the selected state
 }
 
+- (void)setCellData:(NSString *)recipient {
+    _lblRecipient.text = recipient;
+}
+
 @end

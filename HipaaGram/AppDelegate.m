@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) UINavigationController *controller;
 @property (strong, nonatomic) SignInViewController *signInViewController;
+@property (strong, nonatomic) ConversationListViewController *conversationListViewController;
 
 @end
 
@@ -23,6 +24,7 @@
     // Override point for customization after application launch.
     
     _signInViewController = [[SignInViewController alloc] initWithNibName:nil bundle:nil];
+    _signInViewController.delegate = self;
     _controller = [[UINavigationController alloc] initWithRootViewController:_signInViewController];
     self.window.rootViewController = _controller;
     
@@ -56,6 +58,14 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+#pragma mark - SignInDelegate
+
+- (void)signInSuccessful {
+    _conversationListViewController = [[ConversationListViewController alloc] initWithNibName:nil bundle:nil];
+    [_controller popViewControllerAnimated:NO];
+    [_controller pushViewController:_conversationListViewController animated:YES];
 }
 
 @end

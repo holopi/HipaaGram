@@ -8,6 +8,9 @@
 
 #import "ConversationListViewController.h"
 #import "ConversationListTableViewCell.h"
+#import "ProxyAPI.h"
+#import "ConversationViewController.h"
+#import "ContactsViewController.h"
 
 @interface ConversationListViewController ()
 
@@ -30,11 +33,17 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    self.navigationItem.hidesBackButton = YES;
+    self.navigationItem.title = @"Conversations";
+    
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addConversation)];
     
     _conversations = [NSMutableArray array];
     
     [_tblConversationList registerNib:[UINib nibWithNibName:@"ConversationListTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ConversationListCellIdentifier"];
     [_tblConversationList reloadData];
+    
+    [self fetchConversationList];
 }
 
 - (void)didReceiveMemoryWarning
@@ -43,10 +52,31 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)fetchConversationList {
+    [ProxyAPI fetchConversations:^(id response, int status, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            NSLog(@"received conversations: %@", response);
+            _conversations = response;
+            [[NSUserDefaults standardUserDefaults] setObject:response forKey:kConversations];
+            [_tblConversationList reloadData];
+        }
+    }];
+}
+
+- (void)addConversation {
+    ContactsViewController *contactsViewController = [[ContactsViewController alloc] initWithNibName:nil bundle:nil];
+    [self.navigationController pushViewController:contactsViewController animated:YES];
+}
+
 #pragma mark - UITableViewDataSource
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
+    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"phoneNumber"]];
+    [cell setHighlighted:NO animated:NO];
+    [cell setSelected:NO animated:NO];
     return cell;
 }
 
@@ -61,11 +91,18 @@
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    return 88.0f;
+    return 44.0f;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"selected row %ld", indexPath.row);
+    [[tableView cellForRowAtIndexPath:indexPath] setHighlighted:NO animated:YES];
+    [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
+    ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithNibName:nil bundle:nil];
+    conversationViewController.appId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"appId"];
+    conversationViewController.username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"username"];
+    conversationViewController.userId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"userId"];
+    conversationViewController.apiKey = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"apiKey"];
+    [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
 @end

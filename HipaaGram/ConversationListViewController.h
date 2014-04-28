@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HipaaGramViewController.h"
 
-@interface ConversationListViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface ConversationListViewController : HipaaGramViewController<UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tblConversationList;
 
 @end

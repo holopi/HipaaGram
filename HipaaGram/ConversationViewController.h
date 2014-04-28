@@ -7,8 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "HipaaGramViewController.h"
+#import "JSMessagesViewController.h"
 
-@interface ConversationViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
+@interface ConversationViewController : JSMessagesViewController<JSMessagesViewDataSource, JSMessagesViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@property (strong, nonatomic) NSString *userId;
+@property (strong, nonatomic) NSString *username;
+@property (strong, nonatomic) NSString *appId;
+@property (strong, nonatomic) NSString *apiKey;
 @property (weak, nonatomic) IBOutlet UITableView *tblMessages;
 
 @end
