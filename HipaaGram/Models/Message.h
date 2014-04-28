@@ -12,4 +12,6 @@
 
 @interface Message : CatalyzeObject<JSMessageData>
 
+- (id)initWithClassName:(NSString *)className dictionary:(NSDictionary *)dictionary;
+
 @end

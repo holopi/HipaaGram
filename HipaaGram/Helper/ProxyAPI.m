@@ -13,7 +13,7 @@
 
 @implementation ProxyAPI
 
-+ (void)saveNewUserWthUsername:(NSString *)username usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block {
++ (void)signInWithUsername:(NSString *)username usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block {
 #ifdef MOCK
     NSMutableArray *response = [NSMutableArray array];
     [response addObject:@{@"username":@"123-456-7890",@"appId":@"05347671-d948-4c6e-97ed-51d04929b9ef",@"sessionToken":@"b116491b-05ea-41df-9c5b-b154e3d1dfaf", @"apiKey":@"ios hipaa.gram 0e3c577c-d2e9-43a4-9777-9233d4baf4ad"}];
@@ -42,7 +42,7 @@
     [conversations addObject:@{@"username":@"987-654-3210",@"appId":@"05347671-d948-4c6e-97ed-51d04929b9ef",@"usersId":@"987-654-3210",@"apiKey":@"ios hipaa.gram 0e3c577c-d2e9-43a4-9777-9233d4baf4ad"}];
     block(conversations, 200, nil);
 #else
-    [ProxyHTTPManager doGet:[NSString stringWithFormat:@"/message/%@",[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber]] block:block];
+    [ProxyHTTPManager doGet:[NSString stringWithFormat:@"/messages/%@",[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber]] block:block];
 #endif
 }
 
@@ -53,7 +53,7 @@
     [contacts addObject:@{@"username":@"987-654-3210", @"userId":@"3dd4123f-3f3c-46a5-95b8-6aac55fbe496"}];
     block(contacts, 200, nil);
 #else
-    [ProxyHTTPManager doGet:@"/contacts" block:block];
+    [ProxyHTTPManager doGet:@"/list" block:block];
 #endif
 }
 

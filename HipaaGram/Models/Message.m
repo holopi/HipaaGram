@@ -10,16 +10,28 @@
 
 @implementation Message
 
--(NSString *)text {
+- (id)initWithClassName:(NSString *)className dictionary:(NSDictionary *)dictionary {
+    self = [super initWithClassName:className];
+    if (self) {
+        for (NSString *s in [dictionary allKeys]) {
+            [self setObject:[dictionary objectForKey:s] forKey:s];
+        }
+    }
+    return self;
+}
+
+- (NSString *)text {
     return [self valueForKey:@"msgContent"];
 }
 
 - (NSString *)sender {
-    return @"Me";
+    return [self valueForKey:@"fromPhone"];
 }
 
 - (NSDate *)date {
-    return [NSDate date];
+    NSDateFormatter *format = [[NSDateFormatter alloc] init];
+    [format setDateStyle:NSDateFormatterNoStyle];
+    return [format dateFromString:[self valueForKey:@"timestamp"]];
 }
 
 @end

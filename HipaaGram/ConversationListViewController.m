@@ -60,6 +60,7 @@
             NSLog(@"received conversations: %@", response);
             _conversations = response;
             [[NSUserDefaults standardUserDefaults] setObject:response forKey:kConversations];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             [_tblConversationList reloadData];
         }
     }];
@@ -74,7 +75,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"phoneNumber"]];
+    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"username"]];
     [cell setHighlighted:NO animated:NO];
     [cell setSelected:NO animated:NO];
     return cell;

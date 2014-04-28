@@ -10,7 +10,7 @@
 
 @interface ProxyAPI : NSObject
 
-+ (void)saveNewUserWthUsername:(NSString *)username usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block;
++ (void)signInWithUsername:(NSString *)username usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block;
 
 + (void)fetchConversations:(ProxyResultBlock)block;
 

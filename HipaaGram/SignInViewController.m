@@ -77,18 +77,21 @@
 - (IBAction)signIn:(id)sender {
     if (_btnRegister.alpha == 1.0f) {
         [self disableRegistration];
-    } else if ([[NSUserDefaults standardUserDefaults] valueForKey:kUserEmail]) {
-        [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserEmail] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
+    } else if ([[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]) {
+        [self saveToProxy];
+        /*[CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
             if (status == 404) {
                 [self enableRegistration];
             } else {
                 if (error) {
                     [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username/password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
                 } else {
+                    [[NSUserDefaults standardUserDefaults] setValue:_txtPassword.text forKey:kUserPassword];
+                    [[NSUserDefaults standardUserDefaults] synchronize];
                     [_delegate signInSuccessful];
                 }
             }
-        }];
+        }];*/
     } else {
         [self enableRegistration];
     }
@@ -110,20 +113,24 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not sign up: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             [[NSUserDefaults standardUserDefaults] setValue:email.primary forKey:kUserEmail];
-            [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kPhoneNumber];
+            [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
+            [[NSUserDefaults standardUserDefaults] synchronize];
             
-            [self saveToProxy];
+            [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            [self disableRegistration];
         }
     }];
 }
 
 - (void)saveToProxy {
-    [ProxyAPI saveNewUserWthUsername:[[NSUserDefaults standardUserDefaults] valueForKey:kUserEmail] usersId:[[CatalyzeUser currentUser] usersId] phoneNumber:[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber] password:_txtPassword.text block:^(id response, int status, NSError *error) {
+    [ProxyAPI signInWithUsername:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] usersId:[[CatalyzeUser currentUser] usersId] phoneNumber:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(id response, int status, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not sign up: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-            [self disableRegistration];
+            [[NSUserDefaults standardUserDefaults] setObject:response forKey:kTokens];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [_delegate signInSuccessful];
         }
     }];
 }

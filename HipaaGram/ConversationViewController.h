@@ -15,6 +15,5 @@
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *appId;
 @property (strong, nonatomic) NSString *apiKey;
-@property (weak, nonatomic) IBOutlet UITableView *tblMessages;
 
 @end

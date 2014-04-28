@@ -43,11 +43,26 @@
     
     self.messageInputView.textView.placeHolder = @"message";
     
-    self.sender = @"Sender McGee";
+    self.sender = @"The Sender";
     
     _messages = [NSMutableArray array];
     
+    for (NSDictionary *dict in [[NSUserDefaults standardUserDefaults] objectForKey:kTokens]) {
+        if ([[dict valueForKey:@"appId"] isEqualToString:_appId]) {
+            [[NSUserDefaults standardUserDefaults] setValue:[dict valueForKey:@"sessionToken"] forKey:@"Authorization"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            break;
+        }
+    }
+    
     [Catalyze setApiKey:_apiKey applicationId:_appId];
+    [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:[[NSUserDefaults standardUserDefaults] valueForKey:kUserPassword] block:^(int status, NSString *response, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not open the conversation" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            [self queryMessages];
+        }
+    }];
     
     [self.tableView reloadData];
 }
@@ -61,6 +76,27 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)queryMessages {
+    CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"messages"];
+    query.queryField = @"fromPhone";
+    query.queryValue = @"";
+    query.pageNumber = 1;
+    query.pageSize = 50;
+    [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not fetch previous messages" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            NSLog(@"successfully queried class: %@", objects);
+            [_messages removeAllObjects];
+            for (id obj in objects) {
+                Message *msg = [[Message alloc] initWithClassName:@"messages" dictionary:[obj objectForKey:@"content"]];
+                [_messages addObject:msg];
+            }
+            [self.tableView reloadData];
+        }
+    }];
 }
 
 #pragma mark - JSMessagesDataSource
@@ -77,32 +113,34 @@
 
 - (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date {
     NSLog(@"send the text to Catalyze here");
-    Message *msg = [[Message alloc] init];
+    Message *msg = [[Message alloc] initWithClassName:@"messages"];
     [msg setValue:text forKey:@"msgContent"];
-    [_messages addObject:msg];
-    [self finishSend];
-    [self scrollToBottomAnimated:YES];
-    
-    CatalyzeObject *obj = [CatalyzeObject objectWithClassName:@"messages"];
-    [obj setValue:_username forKey:@"toPhone"];
-    [obj setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber] forKey:@"fromPhone"];
+    [msg setValue:_username forKey:@"toPhone"];
+    [msg setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"fromPhone"];
     
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
     [format setDateStyle:NSDateFormatterShortStyle];
     
-    [obj setValue:[format stringFromDate:[NSDate date]] forKey:@"timestamp"];
-    [obj setValue:text forKey:@"msgContent"];
-    [obj setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
+    [msg setValue:[format stringFromDate:[NSDate date]] forKey:@"timestamp"];
+    [msg setValue:text forKey:@"msgContent"];
+    [msg setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
+    [msg setValue:@"" forKey:@"fileId"];
     
-    [obj saveInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
+    [_messages addObject:msg];
+    [self finishSend];
+    [self scrollToBottomAnimated:YES];
+    
+    [msg createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
         if (!succeeded) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            NSLog(@"successfully saved msg");
         }
     }];
 }
 
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if ([[[_messages objectAtIndex:indexPath.row] valueForKey:@"from"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kPhoneNumber]]) {
+    if ([[[_messages objectAtIndex:indexPath.row] valueForKey:@"fromPhone"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]]) {
         return JSBubbleMessageTypeOutgoing;
     }
     return JSBubbleMessageTypeIncoming;
