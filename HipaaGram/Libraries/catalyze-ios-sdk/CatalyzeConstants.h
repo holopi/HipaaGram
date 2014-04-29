@@ -87,4 +87,4 @@ typedef void (^CatalyzeHandleOpenURLBlock)(BOOL authenticated, BOOL newUser);
 /**
  The base URL for the catalyze.io API.  All URLs begin with this URL.
  */
-#define kCatalyzeBaseURL @"https://apiv2.catalyze.io"
+#define kCatalyzeBaseURL @"https://api-staging.catalyze.io"
