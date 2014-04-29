@@ -222,7 +222,7 @@ static CatalyzeUser *currentUser;
             }
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        block(status, nil, error);
+        block(status, response, error);
     }];
 }
 
@@ -247,7 +247,7 @@ static CatalyzeUser *currentUser;
             }
             [[NSUserDefaults standardUserDefaults] synchronize];
         }
-        block(status, nil, error);
+        block(status, response, error);
     }];
 }
 

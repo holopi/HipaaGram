@@ -60,6 +60,7 @@
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not open the conversation" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
+            NSLog(@"loggedIn: %@", response);
             [self queryMessages];
         }
     }];

@@ -42,7 +42,10 @@
     
     [_tblConversationList registerNib:[UINib nibWithNibName:@"ConversationListTableViewCell" bundle:[NSBundle mainBundle]] forCellReuseIdentifier:@"ConversationListCellIdentifier"];
     [_tblConversationList reloadData];
-    
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     [self fetchConversationList];
 }
 
@@ -57,9 +60,10 @@
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            NSLog(@"received conversations: %@", response);
-            _conversations = response;
-            [[NSUserDefaults standardUserDefaults] setObject:response forKey:kConversations];
+            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
+            NSLog(@"received conversations: %@", responseDict);
+            _conversations = [responseDict objectForKey:@"conversations"];
+            [[NSUserDefaults standardUserDefaults] setObject:[responseDict objectForKey:@"conversations"] forKey:kConversations];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [_tblConversationList reloadData];
         }
@@ -75,7 +79,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"username"]];
+    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"]];
     [cell setHighlighted:NO animated:NO];
     [cell setSelected:NO animated:NO];
     return cell;
@@ -100,8 +104,8 @@
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
     ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithNibName:nil bundle:nil];
     conversationViewController.appId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"appId"];
-    conversationViewController.username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"username"];
-    conversationViewController.userId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"userId"];
+    conversationViewController.username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"];
+    //conversationViewController.userId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"userId"];
     conversationViewController.apiKey = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"apiKey"];
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }

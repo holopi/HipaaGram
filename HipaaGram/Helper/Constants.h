@@ -1,4 +1,4 @@
-#define kProxyBaseUrl @"http://nates.ip.addr"
+#define kProxyBaseUrl @"http://10.23.16.111:8080"
 
 #define kUserUsername @"user_username"
 #define kUserEmail @"user_email"
