@@ -1,4 +1,4 @@
-#define kProxyBaseUrl @"http://10.23.16.114:8080"
+#define kProxyBaseUrl @"http://107.170.53.171:8080"
 
 #define kUserUsername @"user_username"
 #define kUserEmail @"user_email"
