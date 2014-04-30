@@ -11,6 +11,8 @@
 #import "Message.h"
 #import "JSBubbleView.h"
 #import "JSBubbleImageViewFactory.h"
+#import "AppDelegate.h"
+#import "AFNetworking.h"
 
 @interface ConversationViewController ()
 
@@ -71,6 +73,12 @@
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     [self scrollToBottomAnimated:NO];
+    [((AppDelegate *)[UIApplication sharedApplication].delegate) setHandler:self];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [((AppDelegate *)[UIApplication sharedApplication].delegate) setHandler:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -95,9 +103,46 @@
                 Message *msg = [[Message alloc] initWithClassName:@"messages" dictionary:[obj objectForKey:@"content"]];
                 [_messages addObject:msg];
             }
+            [_messages sortUsingComparator:^NSComparisonResult(id obj1, id obj2) {
+                return [[((Message*)obj1) valueForKey:@"timestamp"] compare:[((Message*)obj2) valueForKey:@"timestamp"]];
+            }];
             [self.tableView reloadData];
+            [self scrollToBottomAnimated:YES];
         }
     }];
+}
+
+- (void)sendNotification {
+    AFHTTPRequestOperationManager *client = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:[NSURL URLWithString:@"https://go.urbanairship.com"]];
+    client.requestSerializer = [AFJSONRequestSerializer serializer];
+    [client.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    client.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [client.operationQueue setMaxConcurrentOperationCount:1];
+    
+    NSDictionary *ua = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"AirshipConfig" ofType:@"plist"]];
+    [client.requestSerializer setAuthorizationHeaderFieldWithUsername:[ua valueForKey:@"developmentAppKey"] password:[ua valueForKey:@"developmentMasterSecret"]];
+    
+    NSMutableDictionary *notification = [NSMutableDictionary dictionary];
+    [notification setValue:@"all" forKey:@"device_types"];
+    [notification setValue:@{@"alert":[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]} forKey:@"notification"];
+    [notification setValue:@[_username] forKey:@"aliases"];
+    
+    [client POST:@"/api/push/" parameters:notification success:^(AFHTTPRequestOperation *operation, id responseObject) {
+        NSLog(@"successfully sent push notification");
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        NSLog(@"error: %@", error);
+        [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not notify the recipient, they must refresh manually" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+    }];
+}
+
+#pragma mark - PushNotificationHandler
+
+- (void)handleNotification:(NSString *)fromNumber {
+    NSLog(@"handling notification...");
+    if ([fromNumber isEqualToString:_username]) {
+        NSLog(@"I got a msg, querying for it...");
+        [self queryMessages];
+    }
 }
 
 #pragma mark - JSMessagesDataSource
@@ -120,7 +165,7 @@
     [msg setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"fromPhone"];
     
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    [format setDateStyle:NSDateFormatterShortStyle];
+    [format setDateFormat:@"MM-dd-yyyy HH:mm:ss.SSSSSS"];
     
     [msg setValue:[format stringFromDate:[NSDate date]] forKey:@"timestamp"];
     [msg setValue:text forKey:@"msgContent"];
@@ -136,6 +181,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             NSLog(@"successfully saved msg");
+            [self sendNotification];
         }
     }];
 }

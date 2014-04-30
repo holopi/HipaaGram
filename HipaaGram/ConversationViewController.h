@@ -10,10 +10,18 @@
 #import "HipaaGramViewController.h"
 #import "JSMessagesViewController.h"
 
-@interface ConversationViewController : JSMessagesViewController<JSMessagesViewDataSource, JSMessagesViewDelegate, UITableViewDataSource, UITableViewDelegate>
+@protocol PushNotificationHandler <NSObject>
+
+- (void)handleNotification:(NSString *)fromNumber;
+
+@end
+
+@interface ConversationViewController : JSMessagesViewController<JSMessagesViewDataSource, JSMessagesViewDelegate, UITableViewDataSource, UITableViewDelegate, PushNotificationHandler>
 //@property (strong, nonatomic) NSString *userId;
 @property (strong, nonatomic) NSString *username;
 @property (strong, nonatomic) NSString *appId;
 @property (strong, nonatomic) NSString *apiKey;
+
+- (void)queryMessages;
 
 @end

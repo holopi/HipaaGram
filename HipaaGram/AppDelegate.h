@@ -9,9 +9,14 @@
 #import <UIKit/UIKit.h>
 #import "SignInViewController.h"
 #import "ConversationListViewController.h"
+#import "UAirship.h"
+#import "UAConfig.h"
+#import "UAPush.h"
+#import "ConversationViewController.h"
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate, SignInDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, SignInDelegate, UAPushNotificationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
+@property (strong, nonatomic) id<PushNotificationHandler> handler;
 
 @end

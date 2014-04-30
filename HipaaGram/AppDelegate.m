@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "Catalyze.h"
 
 @interface AppDelegate()
 
@@ -27,6 +28,10 @@
     _signInViewController.delegate = self;
     _controller = [[UINavigationController alloc] initWithRootViewController:_signInViewController];
     self.window.rootViewController = _controller;
+    
+    UAConfig *config = [UAConfig defaultConfig];
+    [UAirship takeOff:config];
+    //[UAPush shared].pushNotificationDelegate = self;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
@@ -60,12 +65,75 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
 
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    NSLog(@"application recevied remote Notification %@", userInfo);
+    if (_handler) {
+        NSLog(@"notifying handler");
+        [_handler handleNotification:[[userInfo objectForKey:@"notification"] valueForKey:@"alert"]];
+    }
+    completionHandler(UIBackgroundFetchResultNoData);
+}
+
 #pragma mark - SignInDelegate
 
 - (void)signInSuccessful {
+    [UAPush shared].alias = [[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername];
+    [[UAPush shared] updateRegistration];
+    //[UAPush shared].pushNotificationDelegate = self;
     _conversationListViewController = [[ConversationListViewController alloc] initWithNibName:nil bundle:nil];
     [_controller popViewControllerAnimated:NO];
     [_controller pushViewController:_conversationListViewController animated:YES];
+}
+
+#pragma mark - UAPushNotificationDelegate
+
+- (void)displayNotificationAlert:(NSString *)alertMessage {
+    NSLog(@"displayNotificaitonAlert %@", alertMessage);
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateBackground) {
+        [[[UIAlertView alloc] initWithTitle:@"New Message" message:alertMessage delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+    } else if (_handler) {
+        NSLog(@"notifying handler");
+        [_handler handleNotification:alertMessage];
+    }
+}
+
+- (void)displayLocalizedNotificationAlert:(NSDictionary *)alertDict {
+    NSLog(@"displayLocalizedNotificaitonAlert %@", alertDict);
+}
+
+- (void)playNotificationSound:(NSString *)soundFilename {
+    NSLog(@"playNotificationSound %@", soundFilename);
+}
+
+- (void)handleBadgeUpdate:(NSInteger)badgeNumber {
+    NSLog(@"handleBadgeUpdate %ld", badgeNumber);
+}
+
+- (void)receivedForegroundNotification:(NSDictionary *)notification {
+    NSLog(@"recivedForegroundNotification %@", notification);
+}
+
+- (void)receivedForegroundNotification:(NSDictionary *)notification fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    NSLog(@"receivedForegroundNotificaitonFetchCompletionHandler %@", notification);
+    completionHandler(UIBackgroundFetchResultNoData);
+}
+
+- (void)receivedBackgroundNotification:(NSDictionary *)notification fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    NSLog(@"receivedBackgroundNotificationFetchCOmpletionHandler %@", notification);
+    completionHandler(UIBackgroundFetchResultNoData);
+}
+
+- (void)receivedBackgroundNotification:(NSDictionary *)notification {
+    NSLog(@"receivedBackgroundNotification %@", notification);
+}
+
+- (void)launchedFromNotification:(NSDictionary *)notification {
+    NSLog(@"launchedFromNotification %@", notification);
+}
+
+- (void)launchedFromNotification:(NSDictionary *)notification fetchCompletionHandler:(void (^)(UIBackgroundFetchResult result))completionHandler {
+    NSLog(@"launchedFromNotificationFetchCompletionHandler %@", notification);
+    completionHandler(UIBackgroundFetchResultNoData);
 }
 
 @end

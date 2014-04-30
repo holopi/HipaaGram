@@ -30,7 +30,9 @@
 
 - (NSDate *)date {
     NSDateFormatter *format = [[NSDateFormatter alloc] init];
-    [format setDateStyle:NSDateFormatterNoStyle];
+    [format setDateFormat:@"MM-dd-yyyy HH:mm:ss.SSSSSS"];
+    NSLog(@"timestamp %@", [self valueForKey:@"timestamp"]);
+    NSLog(@"returning %@", [format dateFromString:[self valueForKey:@"timestamp"]]);
     return [format dateFromString:[self valueForKey:@"timestamp"]];
 }
 
