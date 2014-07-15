@@ -1,5 +1,5 @@
 //
-//  ProxyAPI.h
+//  ProxyAPI2.h
 //  HipaaGram
 //
 //  Created by Josh Ault on 4/28/14.
@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface ProxyAPI : NSObject
+@interface ProxyAPI2 : NSObject
 
 + (void)signUpWithUsername:(NSString *)username email:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block;
 

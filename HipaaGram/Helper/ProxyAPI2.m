@@ -8,10 +8,10 @@
 
 //#define MOCK
 
-#import "ProxyAPI.h"
+#import "ProxyAPI2.h"
 #import "ProxyHTTPManager.h"
 
-@implementation ProxyAPI
+@implementation ProxyAPI2
 
 + (void)signUpWithUsername:(NSString *)username email:(NSString *)email firstName:(NSString *)firstName lastName:(NSString *)lastName usersId:(NSString *)usersId phoneNumber:(NSString *)phoneNumber password:(NSString *)password block:(ProxyResultBlock)block {
 #ifdef MOCK

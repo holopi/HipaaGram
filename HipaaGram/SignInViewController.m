@@ -8,7 +8,6 @@
 
 #import "SignInViewController.h"
 #import "Catalyze.h"
-#import "ProxyAPI.h"
 
 @interface SignInViewController ()
 
@@ -31,7 +30,8 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios hipaa.gram 70994ea9-687f-48e4-a209-55e6ab3819cf" applicationId:@"bc9bc5fc-5d56-458b-9003-04f66485859f"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram a31182b6-280b-4ed6-a8d2-72845fe0bfbd" applicationId:@"c2f214ab-69c1-4b92-9c2d-172305c00e4b"];
+    [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
 - (void)didReceiveMemoryWarning
@@ -115,33 +115,21 @@
             NSDictionary *body = [NSJSONSerialization JSONObjectWithData:[response dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
             [[NSUserDefaults standardUserDefaults] setValue:[body valueForKey:@"usersId"] forKey:@"usersId"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            [ProxyAPI signUpWithUsername:_txtPhoneNumber.text email:email.primary firstName:name.firstName lastName:name.lastName usersId:[body valueForKey:@"usersId"] phoneNumber:_txtPhoneNumber.text password:_txtPassword.text block:^(id response, int status, NSError *error) {
-                if (error) {
-                    [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not proxy sign up: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-                } else {
-                    [[NSUserDefaults standardUserDefaults] setValue:email.primary forKey:kUserEmail];
-                    [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
-                    
-                    [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-                    [self disableRegistration];
-                }
-            }];
+            [[NSUserDefaults standardUserDefaults] setValue:email.primary forKey:kUserEmail];
+            [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            [self disableRegistration];
         }
     }];
 }
 
 - (void)saveToProxy {
-    [ProxyAPI signInWithUsername:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] usersId:[[NSUserDefaults standardUserDefaults] valueForKey:@"usersId"] phoneNumber:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(id response, int status, NSError *error) {
+    [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not sign up: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username / password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
-            NSLog(@"tokens: %@", [responseDict objectForKey:@"auth"]);
-            [[NSUserDefaults standardUserDefaults] setObject:[responseDict objectForKey:@"auth"] forKey:kTokens];
-            [[NSUserDefaults standardUserDefaults] setValue:_txtPassword.text forKey:kUserPassword];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            
             [_delegate signInSuccessful];
         }
     }];

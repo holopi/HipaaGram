@@ -8,9 +8,9 @@
 
 #import "ConversationListViewController.h"
 #import "ConversationListTableViewCell.h"
-#import "ProxyAPI.h"
 #import "ConversationViewController.h"
 #import "ContactsViewController.h"
+#import "Catalyze.h"
 
 @interface ConversationListViewController ()
 
@@ -56,14 +56,18 @@
 }
 
 - (void)fetchConversationList {
-    [ProxyAPI fetchConversations:^(id response, int status, NSError *error) {
+    CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"conversations"];
+    [query setPageNumber:1];
+    [query setPageSize:20];
+    [query setQueryField:@"sender"];
+    [query setQueryValue:[[CatalyzeUser currentUser] usersId]];
+    [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            NSDictionary *responseDict = [NSJSONSerialization JSONObjectWithData:response options:0 error:nil];
-            NSLog(@"received conversations: %@", responseDict);
-            _conversations = [responseDict objectForKey:@"conversations"];
-            [[NSUserDefaults standardUserDefaults] setObject:[responseDict objectForKey:@"conversations"] forKey:kConversations];
+            NSLog(@"received conversations: %@", objects);
+            _conversations = [NSMutableArray arrayWithArray:objects];
+            [[NSUserDefaults standardUserDefaults] setObject:objects forKey:kConversations];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [_tblConversationList reloadData];
         }
@@ -79,7 +83,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    [cell setCellData:[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"]];
+    [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"]];
     [cell setHighlighted:NO animated:NO];
     [cell setSelected:NO animated:NO];
     return cell;
