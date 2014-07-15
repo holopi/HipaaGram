@@ -111,11 +111,11 @@
     NSString *usersId;
     NSString *username;
     if (![[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
-        usersId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"];
-        username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"];
+        usersId = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient_id"];
+        username = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"];
     } else {
-        usersId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"sender_id"];
-        username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"sender"];
+        usersId = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"sender_id"];
+        username = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"sender"];
     }
     conversationViewController.username = username;
     conversationViewController.userId = usersId;
