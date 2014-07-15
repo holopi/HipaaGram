@@ -41,8 +41,8 @@
 {
 "name":"contacts",
 "schema":{
-"username":"string",
-"usersId":"string"
+"user_username":"string",
+"user_usersId":"string"
 },
 "phi":false
 }

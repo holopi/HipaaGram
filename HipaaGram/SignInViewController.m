@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram a09b565a-6635-4019-8e9e-86c75aee575c" applicationId:@"65ef8325-5a9b-46a6-af5b-1fe4ee1d060e"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram b81ac879-98c8-42db-b1dd-8442f24fc560" applicationId:@"c48805fa-58f4-475a-a738-56f53d2e68f7"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
@@ -126,8 +126,8 @@
 
 - (void)addToContacts:(NSString *)username usersId:(NSString *)usersId {
     CatalyzeObject *contact = [CatalyzeObject objectWithClassName:@"contacts"];
-    [contact setValue:username forKey:@"username"];
-    [contact setValue:usersId forKey:@"usersId"];
+    [contact setValue:username forKey:@"user_username"];
+    [contact setValue:usersId forKey:@"user_usersId"];
     [contact createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
         if (!succeeded) {
             NSLog(@"Was not added to the contacts custom class!");

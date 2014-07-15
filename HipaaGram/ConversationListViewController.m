@@ -63,7 +63,7 @@
     //[query setQueryValue:[[CatalyzeUser currentUser] usersId]];
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of conversations: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             NSLog(@"received conversations: %@", objects);
             _conversations = [NSMutableArray arrayWithArray:objects];

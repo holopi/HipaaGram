@@ -58,7 +58,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             for (NSDictionary *dict in objects) {
-                if (![[[dict objectForKey:@"content"] valueForKey:@"username"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]]) {
+                if (![[[dict objectForKey:@"content"] valueForKey:@"user_username"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]]) {
                     [_contacts addObject:dict];
                 }
             }
@@ -73,7 +73,7 @@
     ContactTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ContactCellIdentifier"];
     [cell setSelected:NO animated:NO];
     [cell setHighlighted:NO animated:NO];
-    [cell setCellData:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"username"]];
+    [cell setCellData:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"user_username"]];
     return cell;
 }
 
@@ -118,9 +118,9 @@
     
     NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
     [sendDict setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"sender"];
-    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"username"] forKey:@"recipient"];
+    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"user_username"] forKey:@"recipient"];
     [sendDict setValue:[[CatalyzeUser currentUser] usersId] forKey:@"sender_id"];
-    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"usersId"] forKey:@"recipient_id"];
+    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"user_usersId"] forKey:@"recipient_id"];
     
     NSMutableDictionary *outerSendDict = [NSMutableDictionary dictionary];
     [outerSendDict setObject:sendDict forKey:@"content"];
