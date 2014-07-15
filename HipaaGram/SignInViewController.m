@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram e16cd572-5a77-4cdf-b9f3-33092da85d0c" applicationId:@"ab2a7a91-bc8e-4159-87c5-8e51f6fcc70b"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram d39a7c92-92f7-4734-a8ae-8b145a4dce74" applicationId:@"31b66829-9795-4d03-a70d-fc10bff78958"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
@@ -85,6 +85,9 @@
                 if (error) {
                     [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username / password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
                 } else {
+                    if (![[NSUserDefaults standardUserDefaults] boolForKey:@"added_to_contacts"]) {
+                        [self addToContacts:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] usersId:[[CatalyzeUser currentUser] usersId]];
+                    }
                     [_delegate signInSuccessful];
                 }
             }
@@ -116,8 +119,6 @@
             [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
-            [self addToContacts:_txtPhoneNumber.text usersId:[body valueForKey:@"usersId"]];
-            
             [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
             [self disableRegistration];
         }
@@ -131,6 +132,9 @@
     [contact createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
         if (!succeeded) {
             NSLog(@"Was not added to the contacts custom class!");
+        } else {
+            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"added_to_contacts"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
         }
     }];
 }
