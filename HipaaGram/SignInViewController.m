@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram d39a7c92-92f7-4734-a8ae-8b145a4dce74" applicationId:@"31b66829-9795-4d03-a70d-fc10bff78958"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram a09b565a-6635-4019-8e9e-86c75aee575c" applicationId:@"65ef8325-5a9b-46a6-af5b-1fe4ee1d060e"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
@@ -86,7 +86,7 @@
                     [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username / password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
                 } else {
                     if (![[NSUserDefaults standardUserDefaults] boolForKey:@"added_to_contacts"]) {
-                        [self addToContacts:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] usersId:[[CatalyzeUser currentUser] usersId]];
+                        [self addToContacts:[[CatalyzeUser currentUser] username] usersId:[[CatalyzeUser currentUser] usersId]];
                     }
                     [_delegate signInSuccessful];
                 }
@@ -114,7 +114,6 @@
         } else {
             NSDictionary *body = [NSJSONSerialization JSONObjectWithData:[response dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
             [[NSUserDefaults standardUserDefaults] setValue:[body valueForKey:@"usersId"] forKey:@"usersId"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
             [[NSUserDefaults standardUserDefaults] setValue:email.primary forKey:kUserEmail];
             [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
             [[NSUserDefaults standardUserDefaults] synchronize];
