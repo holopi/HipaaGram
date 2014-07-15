@@ -116,8 +116,21 @@
             [[NSUserDefaults standardUserDefaults] setValue:_txtPhoneNumber.text forKey:kUserUsername];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
+            [self addToContacts:_txtPhoneNumber.text usersId:[body valueForKey:@"usersId"]];
+            
             [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
             [self disableRegistration];
+        }
+    }];
+}
+
+- (void)addToContacts:(NSString *)username usersId:(NSString *)usersId {
+    CatalyzeObject *contact = [CatalyzeObject objectWithClassName:@"contacts"];
+    [contact setValue:username forKey:@"username"];
+    [contact setValue:usersId forKey:@"usersId"];
+    [contact createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
+        if (!succeeded) {
+            NSLog(@"Was not added to the contacts custom class!");
         }
     }];
 }
