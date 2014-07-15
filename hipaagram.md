@@ -10,7 +10,9 @@
 "name":"conversations",
 "schema":{
 "sender":"string",
-"recipient":"string"
+"recipient":"string",
+"sender_id":"string",
+"recipient_id":"string"
 },
 "phi":false
 }
@@ -39,17 +41,23 @@
 {
 "name":"contacts",
 "schema":{
-"username":"string"
+"username":"string",
+"usersId":"string"
 },
 "phi":false
 }
 ```
 
-* Give default WRITE permission to all of the above 3 custom classes
+* Give default WRITE permission to all of the above 3 custom classes. You will also need retrieve permissions for contacts.
 
 ```
-POST /v2/acl/custom/{conversations,messages,contacts}/{appId}
+POST /v2/acl/custom/{conversations,messages}/{appId}
 ["create"]
+```
+
+```
+POST /v2/acl/custom/contacts/{appId}
+["create", "retrieve"]
 ```
 
 ##Alternate Setup

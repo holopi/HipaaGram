@@ -51,8 +51,8 @@
     CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"contacts"];
     [query setPageNumber:1];
     [query setPageSize:100];
-    [query setQueryField:@""];
-    [query setQueryValue:@""];
+    //[query setQueryField:@""];
+    //[query setQueryValue:@""];
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
@@ -95,7 +95,7 @@
     NSLog(@"selected contact %@", [_contacts objectAtIndex:indexPath.row]);
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
     [[tableView cellForRowAtIndexPath:indexPath] setHighlighted:NO animated:YES];
-    CatalyzeObject *object = [CatalyzeObject objectWithClassName:@"conversations"];
+    /*CatalyzeObject *object = [CatalyzeObject objectWithClassName:@"conversations"];
     [object setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"sender"];
     [object setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"username"] forKey:@"recipient"];
     [object createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
@@ -113,6 +113,24 @@
                     [self.navigationController popViewControllerAnimated:YES];
                 }
             }];
+        }
+    }];*/
+    
+    NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
+    [sendDict setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"sender"];
+    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"username"] forKey:@"recipient"];
+    [sendDict setValue:[[CatalyzeUser currentUser] usersId] forKey:@"sender_id"];
+    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"usersId"] forKey:@"recipient_id"];
+    
+    NSMutableDictionary *outerSendDict = [NSMutableDictionary dictionary];
+    [outerSendDict setObject:sendDict forKey:@"content"];
+    
+    [CatalyzeHTTPManager doPost:[NSString stringWithFormat:@"/classes/conversations/entry/%@", [sendDict valueForKey:@"recipient_id"]] withParams:outerSendDict block:^(int status, NSString *response, NSError *error) {
+        NSLog(@"created");
+        if (!error) {
+            [self.navigationController popViewControllerAnimated:YES];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not start conversation: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         }
     }];
 }

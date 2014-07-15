@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram a31182b6-280b-4ed6-a8d2-72845fe0bfbd" applicationId:@"c2f214ab-69c1-4b92-9c2d-172305c00e4b"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram e16cd572-5a77-4cdf-b9f3-33092da85d0c" applicationId:@"ab2a7a91-bc8e-4159-87c5-8e51f6fcc70b"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
@@ -78,20 +78,17 @@
     if (_btnRegister.alpha == 1.0f) {
         [self disableRegistration];
     } else if ([[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]) {
-        [self saveToProxy];
-        /*[CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
+        [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
             if (status == 404) {
                 [self enableRegistration];
             } else {
                 if (error) {
-                    [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username/password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+                    [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username / password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
                 } else {
-                    [[NSUserDefaults standardUserDefaults] setValue:_txtPassword.text forKey:kUserPassword];
-                    [[NSUserDefaults standardUserDefaults] synchronize];
                     [_delegate signInSuccessful];
                 }
             }
-        }];*/
+        }];
     } else {
         [self enableRegistration];
     }
@@ -121,16 +118,6 @@
             
             [[[UIAlertView alloc] initWithTitle:@"Success" message:@"Please activate your account and then sign in" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
             [self disableRegistration];
-        }
-    }];
-}
-
-- (void)saveToProxy {
-    [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Invalid username / password" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-        } else {
-            [_delegate signInSuccessful];
         }
     }];
 }

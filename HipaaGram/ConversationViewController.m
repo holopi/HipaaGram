@@ -49,25 +49,7 @@
     
     _messages = [NSMutableArray array];
     
-    for (NSDictionary *dict in [[NSUserDefaults standardUserDefaults] objectForKey:kTokens]) {
-        if ([[dict valueForKey:@"appId"] isEqualToString:_appId]) {
-            [[NSUserDefaults standardUserDefaults] setValue:[dict valueForKey:@"sessionToken"] forKey:@"Authorization"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            break;
-        }
-    }
-    
-    [Catalyze setApiKey:_apiKey applicationId:_appId];
-    [CatalyzeUser logInWithUsernameInBackground:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] password:[[NSUserDefaults standardUserDefaults] valueForKey:kUserPassword] block:^(int status, NSString *response, NSError *error) {
-        if (error) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not open the conversation" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-        } else {
-            NSLog(@"loggedIn: %@", response);
-            [self queryMessages];
-        }
-    }];
-    
-    [self.tableView reloadData];
+    [self queryMessages];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -89,8 +71,8 @@
 
 - (void)queryMessages {
     CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"messages"];
-    query.queryField = @"fromPhone";
-    query.queryValue = @"";
+    //query.queryField = @"fromPhone";
+    //query.queryValue = @"";
     query.pageNumber = 1;
     query.pageSize = 50;
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
@@ -158,7 +140,6 @@
 #pragma mark - JSMessagesDelegate
 
 - (void)didSendText:(NSString *)text fromSender:(NSString *)sender onDate:(NSDate *)date {
-    NSLog(@"send the text to Catalyze here");
     Message *msg = [[Message alloc] initWithClassName:@"messages"];
     [msg setValue:text forKey:@"msgContent"];
     [msg setValue:_username forKey:@"toPhone"];
@@ -176,12 +157,25 @@
     [self finishSend];
     [self scrollToBottomAnimated:YES];
     
-    [msg createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
-        if (!succeeded) {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-        } else {
+    NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
+    [sendDict setValue:text forKey:@"msgContent"];
+    [sendDict setValue:_username forKey:@"toPhone"];
+    [sendDict setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"fromPhone"];
+    
+    [sendDict setValue:[format stringFromDate:[NSDate date]] forKey:@"timestamp"];
+    [sendDict setValue:text forKey:@"msgContent"];
+    [sendDict setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
+    [sendDict setValue:@"" forKey:@"fileId"];
+    NSMutableDictionary *outerSendDict = [NSMutableDictionary dictionary];
+    [outerSendDict setObject:sendDict forKey:@"content"];
+    
+    [CatalyzeHTTPManager doPost:[NSString stringWithFormat:@"/classes/messages/entry/%@", _userId] withParams:outerSendDict block:^(int status, NSString *response, NSError *error) {
+        NSLog(@"created");
+        if (!error) {
             NSLog(@"successfully saved msg");
             [self sendNotification];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         }
     }];
 }
@@ -191,7 +185,6 @@
         return JSBubbleMessageTypeOutgoing;
     }
     return JSBubbleMessageTypeIncoming;
-    //return indexPath.row%2 == 0 ? JSBubbleMessageTypeIncoming : JSBubbleMessageTypeOutgoing;
 }
 
 - (UIColor *)colorForMessageType:(JSBubbleMessageType)type {

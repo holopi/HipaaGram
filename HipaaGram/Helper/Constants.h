@@ -5,6 +5,5 @@
 #define kUserPassword @"user_password"
 
 #define kConversations @"conversations"
-#define kTokens @"tokens"
 
 typedef void (^ProxyResultBlock)(id response, int status, NSError *error);

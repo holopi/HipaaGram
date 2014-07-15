@@ -67,14 +67,14 @@ headers['Authorization'] = 'Bearer {}'.format(resp['sessionToken'])
 
 # create the contacts custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'contacts','schema':{'username':'string'},'phi':False}
+data = {'name':'contacts','schema':{'username':'string','usersId':'string'},'phi':False}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
 
 # create the conversations custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'conversations','schema':{'sender':'string','recipient':'string'},'phi':False}
+data = {'name':'conversations','schema':{'sender':'string','recipient':'string','sender_id':'string','recipient_id':'string'},'phi':False}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
@@ -88,7 +88,7 @@ r.raise_for_status()
 
 # set create permissions for contacts class for the app
 route = '{}/v2/acl/custom/contacts/{}'.format(base_url, app_id)
-data = ['create']
+data = ['create', 'retrieve']
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()

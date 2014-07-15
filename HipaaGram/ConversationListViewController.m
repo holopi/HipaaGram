@@ -59,8 +59,8 @@
     CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"conversations"];
     [query setPageNumber:1];
     [query setPageSize:20];
-    [query setQueryField:@"sender"];
-    [query setQueryValue:[[CatalyzeUser currentUser] usersId]];
+    //[query setQueryField:@"sender"];
+    //[query setQueryValue:[[CatalyzeUser currentUser] usersId]];
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
@@ -107,10 +107,18 @@
     [[tableView cellForRowAtIndexPath:indexPath] setHighlighted:NO animated:YES];
     [[tableView cellForRowAtIndexPath:indexPath] setSelected:NO animated:YES];
     ConversationViewController *conversationViewController = [[ConversationViewController alloc] initWithNibName:nil bundle:nil];
-    conversationViewController.appId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"appId"];
-    conversationViewController.username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"];
-    //conversationViewController.userId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"userId"];
-    conversationViewController.apiKey = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"apiKey"];
+    
+    NSString *usersId;
+    NSString *username;
+    if (![[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
+        usersId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"];
+        username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient"];
+    } else {
+        usersId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"sender_id"];
+        username = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"sender"];
+    }
+    conversationViewController.username = username;
+    conversationViewController.userId = usersId;
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 
