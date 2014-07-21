@@ -67,7 +67,7 @@ headers['Authorization'] = 'Bearer {}'.format(resp['sessionToken'])
 
 # create the contacts custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'contacts','schema':{'user_username':'string','user_usersId':'string'},'phi':True}
+data = {'name':'contacts','schema':{'user_username':'string','user_usersId':'string'},'phi':False}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
