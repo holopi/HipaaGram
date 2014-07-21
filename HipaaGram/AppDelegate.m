@@ -31,7 +31,7 @@
     
     UAConfig *config = [UAConfig defaultConfig];
     [UAirship takeOff:config];
-    //[UAPush shared].pushNotificationDelegate = self;
+    [UAPush shared].pushNotificationDelegate = self;
     
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];

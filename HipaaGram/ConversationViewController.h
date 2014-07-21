@@ -19,6 +19,7 @@
 @interface ConversationViewController : JSMessagesViewController<JSMessagesViewDataSource, JSMessagesViewDelegate, UITableViewDataSource, UITableViewDelegate, PushNotificationHandler>
 @property (strong, nonatomic) NSString *userId;
 @property (strong, nonatomic) NSString *username;
+@property (strong, nonatomic) NSString *conversationsId;
 
 - (void)queryMessages;
 

@@ -71,10 +71,10 @@
 
 - (void)queryMessages {
     CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"messages"];
-    //query.queryField = @"fromPhone";
-    //query.queryValue = @"";
+    query.queryField = @"conversationsId";
+    query.queryValue = _conversationsId;
     query.pageNumber = 1;
-    query.pageSize = 50;
+    query.pageSize = 100;
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:@"Could not fetch previous messages" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
@@ -121,10 +121,10 @@
 
 - (void)handleNotification:(NSString *)fromNumber {
     NSLog(@"handling notification...");
-    if ([fromNumber isEqualToString:_username]) {
+    //if ([fromNumber isEqualToString:_username]) {
         NSLog(@"I got a msg, querying for it...");
         [self queryMessages];
-    }
+    //}
 }
 
 #pragma mark - JSMessagesDataSource
@@ -152,6 +152,7 @@
     [msg setValue:text forKey:@"msgContent"];
     [msg setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
     [msg setValue:@"" forKey:@"fileId"];
+    [msg setValue:_conversationsId forKey:@"conversationsId"];
     
     [_messages addObject:msg];
     [self finishSend];
@@ -166,6 +167,7 @@
     [sendDict setValue:text forKey:@"msgContent"];
     [sendDict setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
     [sendDict setValue:@"" forKey:@"fileId"];
+    [sendDict setValue:_conversationsId forKey:@"conversationsId"];
     NSMutableDictionary *outerSendDict = [NSMutableDictionary dictionary];
     [outerSendDict setObject:sendDict forKey:@"content"];
     

@@ -83,7 +83,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"]];
+    if (![[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
+        [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"]];
+    } else {
+        [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"sender"]];
+    }
     [cell setHighlighted:NO animated:NO];
     [cell setSelected:NO animated:NO];
     return cell;
@@ -119,6 +123,7 @@
     }
     conversationViewController.username = username;
     conversationViewController.userId = usersId;
+    conversationViewController.conversationsId = [[_conversations objectAtIndex:indexPath.row] valueForKey:@"entryId"];
     [self.navigationController pushViewController:conversationViewController animated:YES];
 }
 

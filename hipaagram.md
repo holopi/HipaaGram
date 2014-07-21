@@ -29,7 +29,8 @@
 "fromPhone":"string",
 "timestamp":"string",
 "isPhi":"boolean",
-"fileId":"string"
+"fileId":"string",
+"conversationsId":"string"
 },
 "phi":false
 }

@@ -81,7 +81,7 @@ r.raise_for_status()
 
 # create the messages custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'messages','schema':{'msgContent':'string','toPhone':'string','fromPhone':'string','timestamp':'string','isPhi':'boolean','fileId':'string'},'phi':False}
+data = {'name':'messages','schema':{'conversationsId':'string','msgContent':'string','toPhone':'string','fromPhone':'string','timestamp':'string','isPhi':'boolean','fileId':'string'},'phi':False}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
