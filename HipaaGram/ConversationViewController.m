@@ -154,6 +154,11 @@
     [msg setValue:[NSNumber numberWithBool:NO] forKey:@"isPhi"];
     [msg setValue:@"" forKey:@"fileId"];
     [msg setValue:_conversationsId forKey:@"conversationsId"];
+    [msg createInBackgroundWithBlock:^(BOOL succeeded, int status, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        }
+    }];
     
     [_messages addObject:msg];
     [self finishSend];

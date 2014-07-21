@@ -64,7 +64,6 @@
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of conversations: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            NSLog(@"received conversations: %@", objects);
             [_conversations addObjectsFromArray:objects];
             [[NSUserDefaults standardUserDefaults] setObject:_conversations forKey:kConversations];
             [[NSUserDefaults standardUserDefaults] synchronize];
@@ -80,7 +79,6 @@
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of conversations: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
-            NSLog(@"received conversations: %@", objects);
             [_conversations addObjectsFromArray:objects];
             [[NSUserDefaults standardUserDefaults] setObject:_conversations forKey:kConversations];
             [[NSUserDefaults standardUserDefaults] synchronize];
