@@ -40,6 +40,7 @@
     self.dataSource = self;
     
     [[JSBubbleView appearance] setFont:[UIFont systemFontOfSize:14.0f]];
+    [self setBackgroundColor:[UIColor whiteColor]];
     
     self.title = _username;
     

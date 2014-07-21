@@ -76,6 +76,12 @@
 
 - (void)addConversation {
     ContactsViewController *contactsViewController = [[ContactsViewController alloc] initWithNibName:nil bundle:nil];
+    NSMutableArray *currentConversations = [NSMutableArray array];
+    for (NSDictionary *dict in _conversations) {
+        [currentConversations addObject:[[dict objectForKey:@"content"] valueForKey:@"recipient"]];
+        [currentConversations addObject:[[dict objectForKey:@"content"] valueForKey:@"sender"]];
+    }
+    contactsViewController.currentConversations = currentConversations;
     [self.navigationController pushViewController:contactsViewController animated:YES];
 }
 
@@ -83,7 +89,6 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    NSString *myId = [[CatalyzeUser currentUser] usersId];
     if (![[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
         [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"]];
     } else {

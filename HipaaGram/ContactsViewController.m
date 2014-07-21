@@ -58,7 +58,7 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the contacts: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             for (NSDictionary *dict in objects) {
-                if (![[[dict objectForKey:@"content"] valueForKey:@"user_username"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]]) {
+                if (![[[dict objectForKey:@"content"] valueForKey:@"user_username"] isEqualToString:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername]] && ![_currentConversations containsObject:[[dict objectForKey:@"content"] valueForKey:@"user_username"]]) {
                     [_contacts addObject:dict];
                 }
             }
