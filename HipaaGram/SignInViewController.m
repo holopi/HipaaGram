@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram 561a5d30-e35f-4cce-bf4f-55be1bb51ea9" applicationId:@"41a26345-cc9c-47a8-ad50-7a470fdd80f0"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram 3efb146f-198c-41d3-a0f7-d23c37189454" applicationId:@"d5f29f4f-f122-44a7-aa9b-dcc2e5b3a442"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 
@@ -101,14 +101,11 @@
     if (_txtPhoneNumber.text.length == 0 || _txtPassword.text.length == 0) {
         return;
     }
-    Name *name = [[Name alloc] init];
-    name.firstName = @"HipaaGram";
-    name.lastName = @"User";
     
     Email *email = [[Email alloc] init];
     email.primary = [self randomEmail];
     
-    [CatalyzeUser signUpWithUsernameInBackground:_txtPhoneNumber.text email:email name:name password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
+    [CatalyzeUser signUpWithUsernameInBackground:_txtPhoneNumber.text email:email name:[[Name alloc] init] password:_txtPassword.text block:^(int status, NSString *response, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not sign up: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
