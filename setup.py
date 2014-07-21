@@ -67,21 +67,21 @@ headers['Authorization'] = 'Bearer {}'.format(resp['sessionToken'])
 
 # create the contacts custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'contacts','schema':{'user_username':'string','user_usersId':'string'},'phi':False}
+data = {'name':'contacts','schema':{'user_username':'string','user_usersId':'string'},'phi':True}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
 
 # create the conversations custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'conversations','schema':{'sender':'string','recipient':'string','sender_id':'string','recipient_id':'string'},'phi':False}
+data = {'name':'conversations','schema':{'sender':'string','recipient':'string','sender_id':'string','recipient_id':'string'},'phi':True}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
 
 # create the messages custom class
 route = '{}/v2/classes'.format(base_url)
-data = {'name':'messages','schema':{'conversationsId':'string','msgContent':'string','toPhone':'string','fromPhone':'string','timestamp':'string','isPhi':'boolean','fileId':'string'},'phi':False}
+data = {'name':'messages','schema':{'conversationsId':'string','msgContent':'string','toPhone':'string','fromPhone':'string','timestamp':'string','isPhi':'boolean','fileId':'string'},'phi':True}
 r = s.post(route, data=json.dumps(data), headers=headers, verify=False)
 resp = r.json()
 r.raise_for_status()
