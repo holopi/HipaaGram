@@ -83,7 +83,8 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConversationListTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConversationListCellIdentifier"];
-    if (![[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
+    NSString *myId = [[CatalyzeUser currentUser] usersId];
+    if (![[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
         [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"]];
     } else {
         [cell setCellData:[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"sender"]];
@@ -114,7 +115,7 @@
     
     NSString *usersId;
     NSString *username;
-    if (![[[_conversations objectAtIndex:indexPath.row] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
+    if (![[[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient_id"] isEqualToString:[[CatalyzeUser currentUser] usersId]]) {
         usersId = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient_id"];
         username = [[[_conversations objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"recipient"];
     } else {
