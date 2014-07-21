@@ -30,7 +30,7 @@
     // Do any additional setup after loading the view from its nib.
     self.navigationController.navigationBarHidden = YES;
     
-    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram 0b120bae-dca6-498c-8b4a-0094a3fc258e" applicationId:@"a6be4559-7373-4393-b117-040a0c80dcc2"];
+    [Catalyze setApiKey:@"ios io.catalyze.HipaaGram 561a5d30-e35f-4cce-bf4f-55be1bb51ea9" applicationId:@"41a26345-cc9c-47a8-ad50-7a470fdd80f0"];
     [Catalyze setLoggingLevel:kLoggingLevelDebug];
 }
 

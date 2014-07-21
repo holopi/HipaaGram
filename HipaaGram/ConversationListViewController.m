@@ -56,18 +56,33 @@
 }
 
 - (void)fetchConversationList {
+    _conversations = [NSMutableArray array];
     CatalyzeQuery *query = [CatalyzeQuery queryWithClassName:@"conversations"];
     [query setPageNumber:1];
     [query setPageSize:20];
-    //[query setQueryField:@"sender"];
-    //[query setQueryValue:[[CatalyzeUser currentUser] usersId]];
     [query retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
         if (error) {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of conversations: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         } else {
             NSLog(@"received conversations: %@", objects);
-            _conversations = [NSMutableArray arrayWithArray:objects];
-            [[NSUserDefaults standardUserDefaults] setObject:objects forKey:kConversations];
+            [_conversations addObjectsFromArray:objects];
+            [[NSUserDefaults standardUserDefaults] setObject:_conversations forKey:kConversations];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            [_tblConversationList reloadData];
+        }
+    }];
+    CatalyzeQuery *queryAuthor = [CatalyzeQuery queryWithClassName:@"conversations"];
+    [queryAuthor setPageNumber:1];
+    [queryAuthor setPageSize:20];
+    [queryAuthor setQueryField:@"authorId"];
+    [queryAuthor setQueryValue:[[CatalyzeUser currentUser] usersId]];
+    [queryAuthor retrieveInBackgroundWithBlock:^(NSArray *objects, NSError *error) {
+        if (error) {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not fetch the list of conversations: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        } else {
+            NSLog(@"received conversations: %@", objects);
+            [_conversations addObjectsFromArray:objects];
+            [[NSUserDefaults standardUserDefaults] setObject:_conversations forKey:kConversations];
             [[NSUserDefaults standardUserDefaults] synchronize];
             [_tblConversationList reloadData];
         }
