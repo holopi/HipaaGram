@@ -70,7 +70,6 @@
 		277096D3190EAE96006D2E6D /* Conversation.m in Sources */ = {isa = PBXBuildFile; fileRef = 277096D2190EAE96006D2E6D /* Conversation.m */; };
 		27709730190EB1BB006D2E6D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2770972F190EB1BB006D2E6D /* QuartzCore.framework */; };
 		27709733190EB1FD006D2E6D /* Message.m in Sources */ = {isa = PBXBuildFile; fileRef = 27709732190EB1FD006D2E6D /* Message.m */; };
-		2770973B190ED0EC006D2E6D /* ProxyHTTPManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2770973A190ED0EC006D2E6D /* ProxyHTTPManager.m */; };
 		278B8D5419106B7800CF5ED0 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 278B8D5019106B7800CF5ED0 /* CFNetwork.framework */; };
 		278B8D5519106B7800CF5ED0 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 278B8D5119106B7800CF5ED0 /* MobileCoreServices.framework */; };
 		278B8D5619106B7800CF5ED0 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 278B8D5219106B7800CF5ED0 /* Security.framework */; };
@@ -126,7 +125,6 @@
 		278B8FA919106C4D00CF5ED0 /* UAPushSettingsUserInfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 278B8F7919106C4D00CF5ED0 /* UAPushSettingsUserInfoView.xib */; };
 		278B8FAA19106C4D00CF5ED0 /* UAPushSettingsView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 278B8F7A19106C4D00CF5ED0 /* UAPushSettingsView.xib */; };
 		278B8FAB19106C4D00CF5ED0 /* AirshipConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 278B8F7B19106C4D00CF5ED0 /* AirshipConfig.plist */; };
-		27C3B175193F7A62007D95EA /* ProxyAPI2.m in Sources */ = {isa = PBXBuildFile; fileRef = 27C3B174193F7A62007D95EA /* ProxyAPI2.m */; };
 		27CB6E9719398B78003B212B /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27CB6E9619398B78003B212B /* AdSupport.framework */; };
 		27CB6E9919398B83003B212B /* iAd.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 27CB6E9819398B83003B212B /* iAd.framework */; };
 		D1176ABB6251438CAF19C04F /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DBBF0EE876B48C7A4C93652 /* libPods.a */; };
@@ -255,8 +253,6 @@
 		27709731190EB1FD006D2E6D /* Message.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Message.h; sourceTree = "<group>"; };
 		27709732190EB1FD006D2E6D /* Message.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Message.m; sourceTree = "<group>"; };
 		27709736190EC447006D2E6D /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
-		27709739190ED0EC006D2E6D /* ProxyHTTPManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProxyHTTPManager.h; sourceTree = "<group>"; };
-		2770973A190ED0EC006D2E6D /* ProxyHTTPManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProxyHTTPManager.m; sourceTree = "<group>"; };
 		278B8D5019106B7800CF5ED0 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		278B8D5119106B7800CF5ED0 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		278B8D5219106B7800CF5ED0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -416,8 +412,6 @@
 		278B8F7919106C4D00CF5ED0 /* UAPushSettingsUserInfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UAPushSettingsUserInfoView.xib; sourceTree = "<group>"; };
 		278B8F7A19106C4D00CF5ED0 /* UAPushSettingsView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = UAPushSettingsView.xib; sourceTree = "<group>"; };
 		278B8F7B19106C4D00CF5ED0 /* AirshipConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = AirshipConfig.plist; sourceTree = "<group>"; };
-		27C3B173193F7A62007D95EA /* ProxyAPI2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProxyAPI2.h; sourceTree = "<group>"; };
-		27C3B174193F7A62007D95EA /* ProxyAPI2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProxyAPI2.m; sourceTree = "<group>"; };
 		27CB6E9619398B78003B212B /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		27CB6E9819398B83003B212B /* iAd.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = iAd.framework; path = System/Library/Frameworks/iAd.framework; sourceTree = SDKROOT; };
 		4DBBF0EE876B48C7A4C93652 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -702,10 +696,6 @@
 			isa = PBXGroup;
 			children = (
 				27709736190EC447006D2E6D /* Constants.h */,
-				27709739190ED0EC006D2E6D /* ProxyHTTPManager.h */,
-				2770973A190ED0EC006D2E6D /* ProxyHTTPManager.m */,
-				27C3B173193F7A62007D95EA /* ProxyAPI2.h */,
-				27C3B174193F7A62007D95EA /* ProxyAPI2.m */,
 			);
 			name = Helper;
 			path = HipaaGram/Helper;
@@ -1218,7 +1208,6 @@
 				277096C9190EAD71006D2E6D /* HipaaGramViewController.m in Sources */,
 				278B8F8D19106C4D00CF5ED0 /* UAMapPresentationController.m in Sources */,
 				2745D503197E203E00F3946D /* HealthPlan.m in Sources */,
-				27C3B175193F7A62007D95EA /* ProxyAPI2.m in Sources */,
 				2745D507197E203E00F3946D /* AFHTTPRequestOperation.m in Sources */,
 				278B8F8C19106C4D00CF5ED0 /* UALocationSettingsViewController.m in Sources */,
 				277096D3190EAE96006D2E6D /* Conversation.m in Sources */,
@@ -1239,7 +1228,6 @@
 				2745D4FB197E203E00F3946D /* CatalyzeObject.m in Sources */,
 				2745D50B197E203E00F3946D /* AFSecurityPolicy.m in Sources */,
 				278B8F9319106C4D00CF5ED0 /* UAPushSettingsSoundsViewController.m in Sources */,
-				2770973B190ED0EC006D2E6D /* ProxyHTTPManager.m in Sources */,
 				277096C0190EA743006D2E6D /* ConversationListTableViewCell.m in Sources */,
 				2745D4FE197E203E00F3946D /* CatalyzeUser.m in Sources */,
 				278B8F7F19106C4D00CF5ED0 /* UAInboxAlertHandler.m in Sources */,

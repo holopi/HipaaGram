@@ -164,7 +164,16 @@
     [self finishSend];
     [self scrollToBottomAnimated:YES];
     
-    NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
+    [msg createInBackgroundForUserWithUsersId:_userId block:^(BOOL succeeded, int status, NSError *error) {
+        if (!error) {
+            NSLog(@"successfully saved msg");
+            [self sendNotification];
+        } else {
+            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
+        }
+    }];
+    
+    /*NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
     [sendDict setValue:text forKey:@"msgContent"];
     [sendDict setValue:_username forKey:@"toPhone"];
     [sendDict setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"fromPhone"];
@@ -185,7 +194,7 @@
         } else {
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not send the message: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         }
-    }];
+    }];*/
 }
 
 - (JSBubbleMessageType)messageTypeForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -250,14 +259,6 @@
 - (BOOL)allowsPanToDismissKeyboard {
     return YES;
 }
-
-/*- (UIButton *)sendButtonForInputView {
-    
-}
-
-- (NSString *)customCellIdentifierForRowAtIndexPath:(NSIndexPath *)indexPath {
-    
-}*/
 
 #pragma mark - UITableViewDataSource
 

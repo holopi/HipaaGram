@@ -228,7 +228,7 @@ static CatalyzeUser *currentUser;
 #pragma mark - Signup
 
 + (void)signUpWithUsernameInBackground:(NSString *)username email:(Email *)email name:(Name *)name  password:(NSString *)password block:(CatalyzeHTTPResponseBlock)block {
-    [CatalyzeUser signUpWithUsernameInBackground:username email:email name:name password:password inviteCode:nil block:block];
+    [CatalyzeUser signUpWithUsernameInBackground:username email:email name:name password:password inviteCode:@"" block:block];
 }
 
 + (void)signUpWithUsernameInBackground:(NSString *)username email:(Email *)email name:(Name *)name  password:(NSString *)password inviteCode:(NSString *)inviteCode block:(CatalyzeHTTPResponseBlock)block {
