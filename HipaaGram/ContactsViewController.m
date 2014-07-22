@@ -105,24 +105,6 @@
             [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not start conversation: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
         }
     }];
-    
-    /*NSMutableDictionary *sendDict = [NSMutableDictionary dictionary];
-    [sendDict setValue:[[NSUserDefaults standardUserDefaults] valueForKey:kUserUsername] forKey:@"sender"];
-    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"user_username"] forKey:@"recipient"];
-    [sendDict setValue:[[CatalyzeUser currentUser] usersId] forKey:@"sender_id"];
-    [sendDict setValue:[[[_contacts objectAtIndex:indexPath.row] objectForKey:@"content"] valueForKey:@"user_usersId"] forKey:@"recipient_id"];
-    
-    NSMutableDictionary *outerSendDict = [NSMutableDictionary dictionary];
-    [outerSendDict setObject:sendDict forKey:@"content"];
-    
-    [CatalyzeHTTPManager doPost:[NSString stringWithFormat:@"/classes/conversations/entry/%@", [sendDict valueForKey:@"recipient_id"]] withParams:outerSendDict block:^(int status, NSString *response, NSError *error) {
-        NSLog(@"created");
-        if (!error) {
-            [self.navigationController popViewControllerAnimated:YES];
-        } else {
-            [[[UIAlertView alloc] initWithTitle:@"Error" message:[NSString stringWithFormat:@"Could not start conversation: %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
-        }
-    }];*/
 }
 
 @end
