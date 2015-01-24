@@ -17,9 +17,7 @@
 #import <UIKit/UIKit.h>
 #import "SignInViewController.h"
 #import "ConversationListViewController.h"
-#import "UAirship.h"
-#import "UAConfig.h"
-#import "UAPush.h"
+#import <AirshipKit/AirshipKit.h>
 #import "ConversationViewController.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate, SignInDelegate, UAPushNotificationDelegate>

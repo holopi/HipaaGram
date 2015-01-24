@@ -149,7 +149,7 @@
         [randomString appendFormat: @"%C", [letters characterAtIndex: arc4random() % [letters length]]];
     }
     
-    return [NSString stringWithFormat:@"josh+%@@catalyze.io", randomString];
+    return [NSString stringWithFormat:@"holopi+%@@gmail.com", randomString];
 }
 
 #pragma mark - UITextFieldDelegate

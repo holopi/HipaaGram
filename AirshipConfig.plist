@@ -3,15 +3,15 @@
 <plist version="1.0">
 <dict>
 	<key>developmentMasterSecret</key>
-	<string></string>
+	<string>G2du_e3IRme8Yc</string>
 	<key>analyticsEnabled</key>
 	<false/>
 	<key>inProduction</key>
 	<false/>
 	<key>developmentAppKey</key>
-	<string></string>
+	<string>P2T5AOFkThecYfIUciutqw</string>
 	<key>developmentAppSecret</key>
-	<string></string>
+	<string>syy6qj2cQE6pYeMR2arj6g</string>
 	<key>productionAppKey</key>
 	<string></string>
 	<key>productionAppSecret</key>
